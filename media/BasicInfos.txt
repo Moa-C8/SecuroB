@@ -1,0 +1,25 @@
+Welcome and thanks to use this app 
+- 2 app in one
+    |- > You can crypt and decrypt all you want
+         with D&Crypt
+    |- > You can mange your password with
+         ManAssWord and when you save it's
+         crypted
+- Use the menu bar a lot of things in it
+    in the menu bar of main you need to create a key
+    a random one or with a password
+            
+- choose an app in the menu bar or with the button
+
+- You can also chage background color
+    go on setting in the menu bar and relaunch app
+    you can also desactivate starting pop up
+
+we stock any kinds of data
+we love your privacy
+
+this is probably open source
+
+if you have some problem or need something
+or if you need to do a return go on discord 
+    |- > https://discord.gg/GUsCPxBStD

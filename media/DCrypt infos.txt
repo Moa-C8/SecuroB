@@ -1,0 +1,24 @@
+ 
+To use correctly D&Crypt you need to: 
+
+- use a key or a password 
+    |- > (to create a key go on Folder in menu bar)
+    |-- > (the key is unique don't loose it)
+    |-- > (also don't forget you're password)
+            and press return the entry doesn't auto
+            refresh
+            
+- Then you can import a file 
+    |- > (Work with all type of file)             
+- Now you can Crypt or Decrypt thanks to the buttons 
+
+- You also can modify .txt in the textbox and save it
+    the button save will appear if you browse txt file
+
+
+this part of app doesn't delete any file don't forget
+to do it, this app doesn't save any kinds of data
+we love your privacy
+
+if you need to do a return go on discord 
+    |- > https://discord.gg/GUsCPxBStD
