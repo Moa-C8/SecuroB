@@ -20,13 +20,13 @@ class AppDeCrypt(tk.Tk):
         self.iconbitmap(icone)
         self.resizable(width=False, height=False)
 
-        self.Frame_Master()
+        self.FrameMaster()
         self.readSettingsFile()
 
         if self.listLineSett[1] == "starting_message,1\n":
             messagebox.showinfo('Infos', 'if you never use this app or if you \n had some problems. \nGo on infos in the menu bar \nyou can desactivate this message in settings')
 
-    def Frame_Master(self):
+    def FrameMaster(self):
         self.frameMaster = tk.Frame(self, bg=couleur_bg, width=1280, height=700)
         self.frameMaster.grid()
 
@@ -47,20 +47,20 @@ class AppDeCrypt(tk.Tk):
         #entry
         self.entryPsw = tk.Entry(self.frame0, width=25,show='*')  
         self.entryPsw.bind('<Button-1>', self.resetPswdEntry)     
-        self.entryPsw.bind('<Return>', self.choose_password)
+        self.entryPsw.bind('<Return>', self.choosePassword)
         #text bouton
         self.keyBtnText = tk.StringVar()
         self.seeText = tk.StringVar()
         self.CBtnTxt = tk.StringVar()
         self.DBtnTxt = tk.StringVar()
         #boutons
-        self.keyBtn = tk.Button(self.frame0, textvariable=self.keyBtnText, bg=couleur_bg, relief='groove', bd=3, fg=couleur_fg, padx=2, pady=2, command=lambda:self.find_key())
+        self.keyBtn = tk.Button(self.frame0, textvariable=self.keyBtnText, bg=couleur_bg, relief='groove', bd=3, fg=couleur_fg, padx=2, pady=2, command=lambda:self.findKey())
         self.keyBtnText.set("Browse Key")
-        self.seePswBtn = tk.Button(self.frame0, textvariable=self.seeText, bg=couleur_bg, relief='groove', bd=1, fg=couleur_fg, padx=1, pady=1, command=lambda:self.show_password())
+        self.seePswBtn = tk.Button(self.frame0, textvariable=self.seeText, bg=couleur_bg, relief='groove', bd=1, fg=couleur_fg, padx=1, pady=1, command=lambda:self.showPassword())
         self.seeText.set("see")
-        self.cBtn = tk.Button(self.frame0, textvariable=self.CBtnTxt, bg=couleur_bg, relief='groove', bd=3, fg=couleur_fg, padx=2, pady=2, command=lambda:self.crypt_file())
+        self.cBtn = tk.Button(self.frame0, textvariable=self.CBtnTxt, bg=couleur_bg, relief='groove', bd=3, fg=couleur_fg, padx=2, pady=2, command=lambda:self.cryptFile())
         self.CBtnTxt.set('Crypt')
-        self.dBtn = tk.Button(self.frame0, textvariable=self.DBtnTxt, bg=couleur_bg, relief='groove', bd=3, fg=couleur_fg, padx=2, pady=2, command=lambda:self.decrypt_file())
+        self.dBtn = tk.Button(self.frame0, textvariable=self.DBtnTxt, bg=couleur_bg, relief='groove', bd=3, fg=couleur_fg, padx=2, pady=2, command=lambda:self.decryptFile())
         self.DBtnTxt.set('Decrypt')
         #affichage
         # Boutons
@@ -82,9 +82,9 @@ class AppDeCrypt(tk.Tk):
         #text bouton
         self.txtBtnBrowse = tk.StringVar()
         #bouton
-        self.BFileBtn = tk.Button(self.frame1, textvariable=self.txtBtnBrowse, pady=2, relief='groove', padx=2, bg=couleur_bg, bd=3, fg=couleur_fg, command=lambda:self.browse_file())
+        self.BFileBtn = tk.Button(self.frame1, textvariable=self.txtBtnBrowse, pady=2, relief='groove', padx=2, bg=couleur_bg, bd=3, fg=couleur_fg, command=lambda:self.browseFile())
         self.txtBtnBrowse.set("Browse file")
-        self.BSave = tk.Button(self.frame1, text="Save", pady=2, padx=2, bg=couleur_bg, bd=3, relief='groove', fg=couleur_fg, command=lambda:self.save_file())
+        self.BSave = tk.Button(self.frame1, text="Save", pady=2, padx=2, bg=couleur_bg, bd=3, relief='groove', fg=couleur_fg, command=lambda:self.saveFile())
         self.lblBrowsefile = tk.Label(self.frame1, text="", font=("Raleway", 16), bg=couleur_bg, fg=couleur_fg)
         self.text_box = tk.Text(self.frame1, height=35, width=70, padx=2, pady=2, yscrollcommand=self.scrollbarTxtBox.set, state='normal')
         self.scrollbarTxtBox.config(command=self.text_box.yview)
@@ -95,7 +95,7 @@ class AppDeCrypt(tk.Tk):
 
     # Basics fonction
 
-    def show_password(self):
+    def showPassword(self):
         global i
         if i == 0:
             self.entryPsw.config(show="")
@@ -106,14 +106,14 @@ class AppDeCrypt(tk.Tk):
             i = 0
             self.seeText.set("see")
 
-    def choose_password(self, event):
+    def choosePassword(self, event):
         self.psw_len = len(self.entryPsw.get())
         if self.psw_len > maxCarMdp:
             self.checkWay = True
             self.lblBrowseKey.configure(text="")
             self.lblChoosePsw.configure(text="you used password")
             self.typeOfKey = "password"
-            self.check_way()
+            self.checkWay()
         if self.psw_len <= maxCarMdp:
             self.checkWay = False
             self.lblBrowseKey.configure(text="")
@@ -123,7 +123,7 @@ class AppDeCrypt(tk.Tk):
         self.lblChoosePsw.configure(text="press enter to \n validate")
         self.key = ""
 
-    def get_extension(self, name_file):
+    def getExtension(self, name_file):
         exten = []
         for each in name_file:
             exten.append(each)
@@ -135,14 +135,14 @@ class AppDeCrypt(tk.Tk):
         
         return ext
 
-    def get_name(self, file_Abs_path):
+    def getName(self, file_Abs_path):
         path = Path(file_Abs_path)
         name_file = path.name
 
         return name_file
 
     # Files Fonctions
-    def find_key(self):
+    def findKey(self):
         self.keyBtnText.set("loading ...")
         try :
             filekey = filedialog.askopenfile(title="Select key",filetypes=[("Key file", "*.key")])
@@ -150,14 +150,14 @@ class AppDeCrypt(tk.Tk):
         except:
             self.keyBtnText.set("Browse Key")
         else:
-            nameFileKey = self.get_name(self.absPathKey)
+            nameFileKey = self.getName(self.absPathKey)
             self.lblChoosePsw.configure(text="")
             self.lblBrowseKey.configure(text=nameFileKey)
             self.keyBtnText.set("Browse Key")
             self.typeOfKey = "key"
-            self.check_way()
+            self.checkWay()
 
-    def browse_file(self):
+    def browseFile(self):
         self.txtBtnBrowse.set("loading ...")
         try:
             fileBrowsed = filedialog.askopenfile(title="Select file",filetypes=[("all files","*.*"),("Text file", "*.txt"),("Rar file", "*.rar"),("Zip file", "*.zip")])
@@ -165,10 +165,10 @@ class AppDeCrypt(tk.Tk):
         except:
             self.txtBtnBrowse.set("Browse file")
         else:
-            name_file = self.get_name(self.absPathFile)
+            name_file = self.getName(self.absPathFile)
             self.lblBrowsefile.configure(text=name_file)
             self.txtBtnBrowse.set("Browse file")          
-            ext = self.get_extension(name_file)
+            ext = self.getExtension(name_file)
             try:
                 if ext == ".txt":
                     self.text_box.config(state='normal')
@@ -188,8 +188,8 @@ class AppDeCrypt(tk.Tk):
                 self.text_box.delete(1.0, "end")
                 self.text_box.insert(1.0,"Something wrong sorry \nbtw you can also (de)crypt it")
 
-    def save_file(self):
-        ext = self.get_extension(self.absPathFile)
+    def saveFile(self):
+        ext = self.getExtension(self.absPathFile)
         if ext == ".txt":
             content = self.text_box.get(1.0, 'end')
             file = open(self.absPathFile, 'w')
@@ -198,7 +198,7 @@ class AppDeCrypt(tk.Tk):
         else :
             messagebox.showerror('Sorry', 'you can modify \nand save only .txt')
 
-    def check_way(self):
+    def checkWay(self):
         if self.typeOfKey == "key":   
             fileKey = open(self.absPathKey, "rb")
             self.key = fileKey.read()
@@ -206,7 +206,7 @@ class AppDeCrypt(tk.Tk):
                       
         elif self.typeOfKey == "password":
             if self.checkWay:
-                self.key = self.gen_key_by_password(self.entryPsw.get())
+                self.key = self.genKeyByPassword(self.entryPsw.get())
             else:
                 messagebox.showerror('Problem', 'Password probably to small')      
 
@@ -217,7 +217,7 @@ class AppDeCrypt(tk.Tk):
 
 # (De)Crypt fonctions
 
-    def gen_key_by_password(self,password):
+    def genKeyByPassword(self,password):
         liste_letter = []
         hash_ = hashlib.sha512(password.encode()).hexdigest()
         i = 0
@@ -248,7 +248,7 @@ class AppDeCrypt(tk.Tk):
 
         return key
 
-    def key_generator_random(self):
+    def keyGeneratorRandom(self):
         password = random_password(15)
         
         liste_letter = []
@@ -292,18 +292,18 @@ class AppDeCrypt(tk.Tk):
             fichierCle.write(key)
             fichierCle.close()
 
-    def crypt_file(self):
+    def cryptFile(self):
         self.CBtnTxt.set('Wait ...')
         try:
             f = Fernet(self.key)
         except:
             if messagebox.askyesno('somthing Wrong','have problems with the key \nif you use password press return \nor would you generate a key file') == True:
-                self.key_generator_random()
+                self.keyGeneratorRandom()
             self.CBtnTxt.set('Crypt')
         
         else:
             try:
-                name_file = self.get_name(self.absPathFile)
+                name_file = self.getName(self.absPathFile)
                 nameFile = name_file
                 
             except:
@@ -333,17 +333,17 @@ class AppDeCrypt(tk.Tk):
                     self.CBtnTxt.set('Crypt')
                 self.CBtnTxt.set('Crypt')
                 
-    def decrypt_file(self):
+    def decryptFile(self):
         self.DBtnTxt.set('Wait ...')
         try:
             f = Fernet(self.key)
         except:
             if messagebox.askyesno('Something Wrong','have problems with the key \nif you use password press return \nor would you generate a key file') == True:
-                self.key_generator_random()
+                self.keyGeneratorRandom()
             self.DBtnTxt.set('Decrypt')           
         else:
             try:
-                name_file = self.get_name(self.absPathFile)
+                name_file = self.getName(self.absPathFile)
             except:
                 messagebox.showerror('Error', 'need to browse file')
             else:
@@ -385,10 +385,10 @@ class AppDeCrypt(tk.Tk):
                         except:
                             pass
                         else:
-                            RDname = self.get_name(NDfile)
+                            RDname = self.getName(NDfile)
                             self.absPathFile = NDfile
                             self.lblBrowsefile.configure(text=RDname)
-                            extDfile = self.get_extension(NDfile)                  
+                            extDfile = self.getExtension(NDfile)                  
                             if extDfile == ".txt":
                                 self.text_box.delete(1.0, "end")
                                 self.text_box.insert(1.0, DecryptContent)
@@ -406,7 +406,7 @@ class AppDeCrypt(tk.Tk):
         elif lenPswd > 7:
             self.labelEntry2.configure(text='Ok')
 
-            key = self.gen_key_by_password(password)
+            key = self.genKeyByPassword(password)
             
             try:
                 fileKey = filedialog.asksaveasfile(title="Create key",filetypes=[("key files","*.key")], defaultextension=".key", initialfile="Mykey")

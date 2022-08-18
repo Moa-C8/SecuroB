@@ -1,3 +1,5 @@
+from asyncio import events
+from multiprocessing import Event
 import tkinter as tk
 from tkinter import filedialog, messagebox,colorchooser
 
@@ -9,13 +11,17 @@ import random
 import sqlite3
 from os import remove,execv
 import sys
+import keyboard
 
 from Other import *
 from DeCrypt import AppDeCrypt
 from PassMan import AppSecuroB
 
 
-def setting_window(self):       
+
+#Settings, Colors and Infos
+    #Settings
+def settingWindow(self):       
         self.setWindow = tk.Toplevel()
         self.setWindow.geometry("500x400")
 
@@ -29,38 +35,45 @@ def setting_window(self):
         readSettingsFile(self)
 
         StartMessageframe = tk.Frame(self.setWindow, bg=couleur_bg, width=500, height=50)
-        SMCan = tk.Canvas(StartMessageframe, bg=couleur_bg, highlightthickness=0, width=500, height=50).grid(columnspan=4, rowspan=1)
+        SMCan = tk.Canvas(StartMessageframe, bg=couleur_bg, highlightthickness=0, width=500, height=50).grid(columnspan=4, rowspan=2)
 
-        lblmessageStart = tk.Label(StartMessageframe, text="Starting message", bg=couleur_bg, fg=couleur_fg, font=("impact", 16)).grid(column=0, row=0)
+        lblmessageStart = tk.Label(StartMessageframe, text="  Starting message", bg=couleur_bg, fg=couleur_fg, font=("impact", 16)).grid(column=0, row=0)
         self.lblVSM = tk.StringVar()
+        SMbutton = tk.Button(StartMessageframe,textvariable=self.lblVSM, pady=2, relief='groove', padx=2, bg=couleur_bg, bd=3, fg=couleur_fg, command=lambda:changeSettingsFile(self,"StartMessage")).grid(column=2, row=0)
 
         if self.listLineSett[1] == "starting_message,0\n":
             self.lblVSM.set('Enable it')
         elif self.listLineSett[1] == "starting_message,1\n":
             self.lblVSM.set('Disable it')
 
-        SMbutton = tk.Button(StartMessageframe,textvariable=self.lblVSM, pady=2, relief='groove', padx=2, bg=couleur_bg, bd=3, fg=couleur_fg, command=lambda:change_settingsFile(self,"StartMessage")).grid(column=2, row=0)
+        lblmessageEnd = tk.Label(StartMessageframe, text="Ending message", bg=couleur_bg, fg=couleur_fg, font=("impact", 16)).grid(column=0, row=1)
+        self.lblVEM = tk.StringVar()
+        EMbutton = tk.Button(StartMessageframe,textvariable=self.lblVEM, pady=2, relief='groove', padx=2, bg=couleur_bg, bd=3, fg=couleur_fg, command=lambda:changeSettingsFile(self,"EndMessage")).grid(column=2, row=1)
+
+        if self.listLineSett[7] == "0\n":
+            self.lblVEM.set('Enable it')
+        elif self.listLineSett[7] == "1\n":
+            self.lblVEM.set('Disable it')
+ 
 
         BtnColorFrame = tk.Frame(self.setWindow, bg=couleur_bg, width=500, height=280)
         btnCan = tk.Canvas(BtnColorFrame, bg=couleur_bg, highlightthickness=0, width=500, height=280).grid(columnspan=7, rowspan=4)
 
         lblBtnCcolor = tk.Label(BtnColorFrame, text="Change bg color", bg=couleur_bg, fg=couleur_fg, font=("impact", 16)).place(x=34, y=40)
         
-        btnColor0 = tk.Button(BtnColorFrame, text='Black',width=6 , relief='groove', bg='#181818', fg=couleur_fg, command=lambda:change_settingsFile(self,'bgColor','#181818')).grid(column=0,row=1)
-        btnColor1 = tk.Button(BtnColorFrame, text='Blue',width=6 , relief='groove', bg='#2E4053', fg=couleur_fg, command=lambda:change_settingsFile(self,'bgColor','#2E4053')).grid(column=2,row=1)
-        btnColor2 = tk.Button(BtnColorFrame, text='Purple',width=6 , relief='groove', bg='#7D3C98', fg=couleur_fg, command=lambda:change_settingsFile(self,'bgColor','#7D3C98')).grid(column=4,row=1)
-        btnColor3 = tk.Button(BtnColorFrame, text='Green',width=6 , relief='groove', bg='#1E8449', fg=couleur_fg, command=lambda:change_settingsFile(self,'bgColor','#1E8449')).grid(column=6,row=1)
-        btnColor4 = tk.Button(BtnColorFrame, text='Red',width=6 , relief='groove', bg='#C10202', fg=couleur_fg, command=lambda:change_settingsFile(self,'bgColor','#C10202')).grid(column=0,row=2)
-        btnColor5 = tk.Button(BtnColorFrame, text='Orange',width=6 , relief='groove', bg='#A93226', fg=couleur_fg, command=lambda:change_settingsFile(self,'bgColor','#A93226')).grid(column=2,row=2)
-        btnColor6 = tk.Button(BtnColorFrame, text='Grey',width=6 , relief='groove', bg='#5B5B5B', fg=couleur_fg, command=lambda:change_settingsFile(self,'bgColor','#5B5B5B')).grid(column=4,row=2)
-        btnColor7 = tk.Button(BtnColorFrame, text='Basic',width=6 , relief='groove', bg='#35393C', fg=couleur_fg, command=lambda:change_settingsFile(self,'bgColor','#35393C')).grid(column=6,row=2)
+        btnColor0 = tk.Button(BtnColorFrame, text='Black',width=6 , relief='groove', bg='#181818', fg=couleur_fg, command=lambda:changeSettingsFile(self,'bgColor','#181818')).grid(column=0,row=1)
+        btnColor1 = tk.Button(BtnColorFrame, text='Blue',width=6 , relief='groove', bg='#2E4053', fg=couleur_fg, command=lambda:changeSettingsFile(self,'bgColor','#2E4053')).grid(column=2,row=1)
+        btnColor2 = tk.Button(BtnColorFrame, text='Purple',width=6 , relief='groove', bg='#7D3C98', fg=couleur_fg, command=lambda:changeSettingsFile(self,'bgColor','#7D3C98')).grid(column=4,row=1)
+        btnColor3 = tk.Button(BtnColorFrame, text='Green',width=6 , relief='groove', bg='#1E8449', fg=couleur_fg, command=lambda:changeSettingsFile(self,'bgColor','#1E8449')).grid(column=6,row=1)
+        btnColor4 = tk.Button(BtnColorFrame, text='Red',width=6 , relief='groove', bg='#C10202', fg=couleur_fg, command=lambda:changeSettingsFile(self,'bgColor','#C10202')).grid(column=0,row=2)
+        btnColor5 = tk.Button(BtnColorFrame, text='Orange',width=6 , relief='groove', bg='#A93226', fg=couleur_fg, command=lambda:changeSettingsFile(self,'bgColor','#A93226')).grid(column=2,row=2)
+        btnColor6 = tk.Button(BtnColorFrame, text='Grey',width=6 , relief='groove', bg='#5B5B5B', fg=couleur_fg, command=lambda:changeSettingsFile(self,'bgColor','#5B5B5B')).grid(column=4,row=2)
+        btnColor7 = tk.Button(BtnColorFrame, text='Basic',width=6 , relief='groove', bg='#35393C', fg=couleur_fg, command=lambda:changeSettingsFile(self,'bgColor','#35393C')).grid(column=6,row=2)
         btnColor8 = tk.Button(BtnColorFrame, text='Perso color' , relief='groove', bg=couleur_bg, fg=couleur_fg, command=lambda:persoBgColor(self)).grid(column=2,row=3)
         btnColor9 = tk.Button(BtnColorFrame, text='Perso Fg' , relief='groove', bg=couleur_bg, fg=couleur_fg, command=lambda:persoFgColor(self)).grid(column=4,row=3)
 
         StartMessageframe.grid(column=1, row=1)
         BtnColorFrame.grid(column=1, row=2)
-        
-        self.setWindow.mainloop()
 
 def readSettingsFile(self):
         fic = open(SettingFile, 'r')
@@ -73,19 +86,8 @@ def setClose(self):
             # Fonctionne que avec le exe
             sys.stdout.flush() 
             execv(sys.argv[0], sys.argv )
-# colors Fonction
-def persoBgColor(self):
-        persoColor = colorchooser.askcolor()[1]
-        if persoColor:
-            self.change_settingsFile('bgColor', str(persoColor))
 
-def persoFgColor(self):
-        persofg = colorchooser.askcolor()[1]
-        if persofg:
-            self.change_settingsFile('fg', str(persofg))
-
-def change_settingsFile(self, setting, value="0"):
-
+def changeSettingsFile(self, setting, value="0"):
         if setting == "bgColor":
             self.listLineSett[0] = (f'{value}\n')      
         elif setting == "StartMessage":
@@ -100,14 +102,32 @@ def change_settingsFile(self, setting, value="0"):
             self.listLineSett[2] = (f'language,{value}\n')
         elif setting == 'fg':
             self.listLineSett[6] = (f'{value}\n')
-        elif setting == 'DefaultApp':
-            self.listLineSett[7] =(f'{value}\n')
+        elif setting == 'EndMessage':
+            if self.listLineSett[7] == '0\n':
+                value = 1
+                self.lblVEM.set('Disable it')
+            elif self.listLineSett[7] == '1\n':
+                value = 0
+                self.lblVEM.set('Enable it')
+            self.listLineSett[7] = (f'{value}\n')
         
         fic = open(SettingFile, 'w')
         for each in self.listLineSett:
             fic.write(each) 
         fic.close()
-    # Fenetre Info
+
+    #Colors
+def persoBgColor(self):
+        persoColor = colorchooser.askcolor()[1]
+        if persoColor:
+            self.changeSettingsFile('bgColor', str(persoColor))
+
+def persoFgColor(self):
+        persofg = colorchooser.askcolor()[1]
+        if persofg:
+            self.changeSettingsFile('fg', str(persofg))
+
+    #Info
 def infoAWindow(self, what):
         self.InfoWindow = tk.Toplevel()
         self.InfoWindow.geometry("500x600")
@@ -135,7 +155,8 @@ def infoAWindow(self, what):
         textIBox.pack()
 
         self.InfoWindow.mainloop()
-    # Fenetre Top level Create key by Password
+    
+# Fenetre Top level Create key
 def keyFileByPswd(self):
         self.window2 = tk.Toplevel(self)
         self.window2.title("File Key by password")
@@ -159,12 +180,14 @@ def keyFileByPswd(self):
         self.btnHideSee.grid(column=2, row=1)
         self.seeTxt.set("see")
 
-        self.entrypswd.bind('<Return>', self.afterKfile)
+        def activateFunc(e):
+            afterKfile(self)
 
-        self.btnCreate = tk.Button(self.window2, text="Create", bg=couleur_bg, fg=couleur_fg, relief='groove', command=lambda:self.afterKfile(1))
+        self.entrypswd.bind('<Return>', activateFunc)
+
+        self.btnCreate = tk.Button(self.window2, text="Create", bg=couleur_bg, fg=couleur_fg, relief='groove', command=lambda:afterKfile(self))
         self.btnCreate.pack()
-   
-   
+      
 def keyFileByKey(self):
         self.window4 = tk.Toplevel(self)
         self.window4.title("File Key by key")
@@ -187,9 +210,12 @@ def keyFileByKey(self):
         self.TxtError = tk.Label(LabelFKey, bg=couleur_bg, fg=couleur_fg ,font=('Raleway', 16))
         self.TxtError.pack(pady=5)
 
-        #self.EntryKey.bind('<Return>', lambda:afterKbyK(self))
+        def activateFunc(e):
+            afterKbyK(self)
 
-        self.btnCreateK = tk.Button(self.window4, text="Create", bg=couleur_bg, fg=couleur_fg, relief='groove', command=lambda:afterKbyK(self,8))
+        self.EntryKey.bind('<Return>', activateFunc)
+
+        self.btnCreateK = tk.Button(self.window4, text="Create", bg=couleur_bg, fg=couleur_fg, relief='groove', command=lambda:afterKbyK(self))
         self.btnCreateK.pack(pady=10)
 
 def ShowEntryPswd(self):
@@ -203,7 +229,7 @@ def ShowEntryPswd(self):
             l = 0
             self.seeTxt.set('see')
 
-def afterKbyK(self,e):
+def afterKbyK(self):
         key = self.EntryKey.get()
         lenTxt = len(key)
         if lenTxt < 44:
@@ -228,8 +254,9 @@ def afterKbyK(self,e):
                         key = bytes(key, 'utf-8')
                         filela.write(key)
                         filela.close()
+                        self.window4.destroy()
 
-def afterKfile(self,e):
+def afterKfile(self):
         password = self.entrypswd.get()
         lenPswd = len(password)
         if lenPswd <= 7:
@@ -237,7 +264,7 @@ def afterKfile(self,e):
         elif lenPswd > 7:
             self.labelEntry2.configure(text='Ok')
 
-            key = AppDeCrypt.gen_key_by_password(application, password)
+            key = AppDeCrypt.genKeyByPassword(application, password)
             
             try:
                 fileKey = filedialog.asksaveasfile(title="Create key",filetypes=[("key files","*.key")], defaultextension=".key", initialfile="Mykey")
@@ -251,9 +278,9 @@ def afterKfile(self,e):
                 else:
                     filele.write(key)
                     filele.close()
-                    self.window2.deiconify()
-                    self.labelEntry2.configure(text='you can close me')
-    # Fenetre Top level generate password
+                    self.window2.destroy()
+
+# Fenetre Top level generate password
 def passwordGenerator(self):
         window3 = tk.Toplevel(self)
         window3.title("Password Generator")
@@ -297,7 +324,6 @@ def CheckGenerate(self, e):
             self.lblSizeLeft.configure(text='number only')
 
 #Menu
-
 def menuDeCrypt(app):
     menuDecrypt = tk.Menu(app, bd=2, font=("Raleway", 16), relief='sunken')
 
@@ -311,14 +337,14 @@ def menuDeCrypt(app):
     menuDecrypt.add_cascade(label="Infos", font=("Raleway", 16), menu=menuI)
 
     
-    menuDecrypt.add_cascade(label="Settings", font=("Raleway", 10), command=lambda:setting_window(app))
+    menuDecrypt.add_cascade(label="Settings", font=("Raleway", 10), command=lambda:settingWindow(app))
 
     menuA.add_command(label="Password manager", font=("Raleway", 10), command=lambda:mainToSecurob(app))
     #menuA.add_command(label="Main menu", font=("Raleway", 10), command=lambda:mainMenu(app))
     
     menuF.add_command(label="Password Generator", font=("Raleway", 10), command=lambda:passwordGenerator(app))
     menuF.add_separator()
-    menuF.add_command(label="Create key file Random", font=("Raleway", 10), command=lambda:AppDeCrypt.key_generator_random(app))
+    menuF.add_command(label="Create key file Random", font=("Raleway", 10), command=lambda:AppDeCrypt.keyGeneratorRandom(app))
     menuF.add_command(label="Create key file by Password", font=("Raleway", 10), command=lambda:keyFileByPswd(app))
     menuF.add_command(label="Create key file with key", font=("Raleway", 10), command=lambda:keyFileByKey(app))
 
@@ -352,7 +378,7 @@ def menuSecuroB(app):
         
         menuF.add_command(label="Password Generator", font=("Raleway", 10), command=lambda:passwordGenerator(app))
         menuF.add_separator()
-        menuF.add_command(label="Create key file Random", font=("Raleway", 10), command=lambda:AppDeCrypt.key_generator_random(app))  #, command=DeCrypt.key_generator_random
+        menuF.add_command(label="Create key file Random", font=("Raleway", 10), command=lambda:AppDeCrypt.keyGeneratorRandom(app))  #, command=DeCrypt.key_generator_random
         menuF.add_command(label="Create key file by Password", font=("Raleway", 10), command=lambda:keyFileByPswd(app))
         menuF.add_command(label="Create key file with key", font=("Raleway", 10), command=lambda:keyFileByKey(app))
         menuF.add_separator()
@@ -363,7 +389,7 @@ def menuSecuroB(app):
         #menuI.add_command(label="Infos D&Crypt", font=("Raleway", 10), command=lambda:infoAWindow(app,'1')) 
         menuI.add_command(label="Infos Password manager", font=("Raleway", 10), command=lambda:infoAWindow(app,'2'))
 
-        menuS.add_command(label="Basic settings", font=("Raleway", 10), command=lambda:setting_window(app))
+        menuS.add_command(label="Basic settings", font=("Raleway", 10), command=lambda:settingWindow(app))
         menuS.add_separator()
         menuS.add_command(label="Primary Color", font=("Raleway", 10), command=lambda:AppSecuroB.primaryColor(app))           
         menuS.add_command(label="Secondary Color", font=("Raleway", 10), command=lambda:AppSecuroB.secondaryColor(app))       
@@ -425,14 +451,23 @@ def removeDb():
     except:
         pass
 
+
+
 if __name__ == '__main__':
+
     def mainToDeCrypt(app):
-        removeDb()
-        app.destroy()
-        
-        app = AppDeCrypt()
-        menuDeCrypt(app)
-        app.protocol("WM_DELETE_WINDOW", lambda:closeAppWindow2(app))
+        k = 0
+        readSettingsFile(app)
+
+        if app.listLineSett[7] == '1\n':
+            if messagebox.askyesno("Close App","do you correctly save all ?") == True:
+                k = 1
+
+        if app.listLineSett[7] == '0\n' or k == 1:
+            removeDb()
+            app.destroy()
+            app = AppDeCrypt()
+            menuDeCrypt(app)
             
     def mainToSecurob(app):
         removeDb()
@@ -443,17 +478,18 @@ if __name__ == '__main__':
         app.protocol("WM_DELETE_WINDOW", lambda:closeAppWindow2(app))
 
     def closeAppWindow2(app):
-        if messagebox.askyesno("Close App","do you correctly save all ?") == True:
+        k = 0
+        readSettingsFile(app)
+
+        if app.listLineSett[7] == '1\n':
+            if messagebox.askyesno("Close App","do you correctly save all ?") == True:
+                k = 1
+        if app.listLineSett[7] == '0\n' or k == 1:
             removeDb()
             app.destroy()
 
-    if application == '2':
-        application = AppDeCrypt()
-        menuDeCrypt(application)
-        application.protocol("WM_DELETE_WINDOW",lambda:closeAppWindow2(application))
-    else:
-        application = AppSecuroB()
-        menuSecuroB(application)
-        application.protocol("WM_DELETE_WINDOW",lambda:closeAppWindow2(application))
-    
+    application = AppSecuroB()
+    menuSecuroB(application)
+    application.protocol("WM_DELETE_WINDOW",lambda:closeAppWindow2(application))
+
     application.mainloop()

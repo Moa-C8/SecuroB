@@ -93,13 +93,13 @@ class AppSecuroB(tk.Tk):
 
         self.lblKey = tk.Label(self.frameFile, text="", font=("Raleway", 16), bg=couleur_bg, fg=couleur_fg)
         self.lblKey.grid(row=0, column=0, padx=10, pady=(3,5))
-        self.btnKey = tk.Button(self.frameFile,textvariable=self.keyBtnText, bg=couleur_bg, relief='groove', bd=3, fg=couleur_fg, padx=2, pady=2, command=self.find_key)
+        self.btnKey = tk.Button(self.frameFile,textvariable=self.keyBtnText, bg=couleur_bg, relief='groove', bd=3, fg=couleur_fg, padx=2, pady=2, command=self.findKey)
         self.keyBtnText.set("Browse Key")
         self.btnKey.grid(row=0, column=1, pady=(3,3))
 
         self.lblBrowse = tk.Label(self.frameFile, text="", font=("Raleway", 16), bg=couleur_bg, fg=couleur_fg)
         self.lblBrowse.grid(row=0, column=2, padx=10, pady=(3,5))
-        self.btnBrowse = tk.Button(self.frameFile,textvariable=self.fileBrowseText, bg=couleur_bg, relief='groove', bd=3, fg=couleur_fg, padx=2, pady=2, command=self.find_database)
+        self.btnBrowse = tk.Button(self.frameFile,textvariable=self.fileBrowseText, bg=couleur_bg, relief='groove', bd=3, fg=couleur_fg, padx=2, pady=2, command=self.findDatabase)
         self.fileBrowseText.set("Browse Database")
         self.btnBrowse.grid(row=0, column=3, pady=(3,5), padx=(0,5))
 
@@ -437,13 +437,13 @@ class AppSecuroB(tk.Tk):
         if self.lblKey.cget("text") != "" and self.lblBrowse.cget("text") != "" :
             self.btnOpen.grid(row=0, column=4, pady=(3,5), padx=(5,5))
  
-    def get_name(self, file_Abs_path):
+    def getName(self, file_Abs_path):
         path = Path(file_Abs_path)
         name_file = path.name
 
         return name_file
     
-    def find_key(self):
+    def findKey(self):
         self.keyBtnText.set("Browse ...")
         try :
             filekey = filedialog.askopenfile(title="Select key",filetypes=[("Key file", "*.key")])
@@ -451,13 +451,13 @@ class AppSecuroB(tk.Tk):
         except:
             self.keyBtnText.set("Browse Key")
         else:
-            nameFileKey = self.get_name(self.absPathKey)
+            nameFileKey = self.getName(self.absPathKey)
             self.lblKey.configure(text=nameFileKey)
             self.keyBtnText.set("Browse Key")
             
             self.openTVBtn()
 
-    def find_database(self):
+    def findDatabase(self):
         self.fileBrowseText.set("Browse ...")
         try :
             filekey = filedialog.askopenfile(title="Select Database",filetypes=[("Crypted sqlite3 file","*.dbc"),("All Types", "*")])
@@ -465,7 +465,7 @@ class AppSecuroB(tk.Tk):
         except:
             self.fileBrowseText.set("Browse Database")
         else:
-            nameFileDatabase = self.get_name(self.absPathdatabase)
+            nameFileDatabase = self.getName(self.absPathdatabase)
             self.lblBrowse.configure(text=nameFileDatabase)
             self.fileBrowseText.set("Browse Database")
             
@@ -496,7 +496,7 @@ class AppSecuroB(tk.Tk):
                 except:
                     print('ici')
                 else:
-                    nameFile = self.get_name(self.absPathdatabase)
+                    nameFile = self.getName(self.absPathdatabase)
                     for k in range(0,4):
                         nameFile = nameFile[:-1]
                     fileDbDcrypt = open(TempFileDc, 'wb')
@@ -547,7 +547,7 @@ class AppSecuroB(tk.Tk):
 
 
 # other fonction for create key with password in menubar
-    def gen_key_by_password(self,password):
+    def genKeyByPassword(self,password):
         liste_letter = []
         hash_ = hashlib.sha512(password.encode()).hexdigest()
         i = 0
@@ -586,7 +586,7 @@ class AppSecuroB(tk.Tk):
             elif lenPswd > 7:
                 self.labelEntry2.configure(text='Ok')
 
-                key = self.gen_key_by_password(password)
+                key = self.genKeyByPassword(password)
                 
                 try:
                     fileKey = filedialog.asksaveasfile(title="Create key",filetypes=[("key files","*.key")], defaultextension=".key", initialfile="Mykey")
