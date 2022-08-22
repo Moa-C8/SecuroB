@@ -121,12 +121,14 @@ def changeSettingsFile(self, setting, value="0"):
 def persoBgColor(self):
         persoColor = colorchooser.askcolor()[1]
         if persoColor:
-            self.changeSettingsFile('bgColor', str(persoColor))
+            changeSettingsFile(self, 'bgColor', str(persoColor))
+            print(str(persoColor))
 
 def persoFgColor(self):
         persofg = colorchooser.askcolor()[1]
         if persofg:
-            self.changeSettingsFile('fg', str(persofg))
+            changeSettingsFile(self, 'fg', str(persofg))
+            print(str(persofg))
 
     #Info
 def infoAWindow(self, what):
