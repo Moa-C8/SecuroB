@@ -1,6 +1,9 @@
 # SecuroB
 Password Manager
 
+WARNING
+  \n Error Known {Restart after changing setting work omly with the exe file}
+
 
 That was my first application .
 it's a password manager for more information i made info text in app
