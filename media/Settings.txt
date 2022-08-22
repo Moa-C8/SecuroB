@@ -1,8 +1,0 @@
-#35393C
-starting_message,0
-language,en
-#fb8a46
-#398675
-#94df62
-#ffffff
-1
