@@ -1,7 +1,7 @@
 
 To use correctly ManAssWord you need to: 
 
-- browse a key
+- choose between key or password
     |- > (to create a key go on Folder in menu bar)
     |-- > (the key is unique don't loose it)
 - Then you can Browse Crypted Database 
@@ -20,4 +20,4 @@ only stock on this file
 we love your privacy
 
 if you need to do a return go on discord 
-    |- > https://discord.gg/GUsCPxBStD
+    |- > https://discord.gg/BrnEEAM83F

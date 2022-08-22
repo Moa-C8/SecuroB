@@ -15,10 +15,9 @@ To use correctly D&Crypt you need to:
 - You also can modify .txt in the textbox and save it
     the button save will appear if you browse txt file
 
-
 this part of app doesn't delete any file don't forget
 to do it, this app doesn't save any kinds of data
 we love your privacy
 
 if you need to do a return go on discord 
-    |- > https://discord.gg/GUsCPxBStD
+    |- > https://discord.gg/BrnEEAM83F
