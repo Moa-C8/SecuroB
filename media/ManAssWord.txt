@@ -1,0 +1,23 @@
+
+To use correctly ManAssWord you need to: 
+
+- choose between key or password
+    |- > (to create a key go on Folder in menu bar)
+    |-- > (the key is unique don't loose it)
+- Then you can Browse Crypted Database 
+    |- > (You can create one in folder like key)             
+- Click on open to display treeview
+
+- You can also chage color of row in treeview
+    go on setting in the menu bar
+- You can seach in treeview
+    click on Search in menu bar, reset or update treeview
+    if you need to select or change anoter one
+
+this part of app delete 2 type of file a temporary one
+and your old Crypted database (.dbc) but your data is
+only stock on this file
+we love your privacy
+
+if you need to do a return go on discord 
+    |- > https://discord.gg/BrnEEAM83F

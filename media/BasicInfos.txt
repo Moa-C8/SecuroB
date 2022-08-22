@@ -1,0 +1,21 @@
+Welcome and thanks to use this app 
+- 2 app in one
+    |- > You can crypt and decrypt what you
+          have already crypted 
+            with D&Crypt
+    |- > You can mange your password with
+         PassMan and when you save it's
+         crypted
+- Use the menu bar a lot of things in it
+            
+- you can change app in the menu bar
+
+- You can chage settings
+    go on basic setting in the menu bar 
+    and relaunch app
+
+this app doesn't stock any kinds of data
+
+if you have some problem or need something
+or if you need to do a return go on discord 
+    |- > https://discord.gg/BrnEEAM83F
