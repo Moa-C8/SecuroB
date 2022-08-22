@@ -1,5 +1,7 @@
 # SecuroB
-Password Manager
+Password Manager (only for scripts)
+
+you find all infos in app sorry for my bad english
 
 WARNING
    Error Known {Restart after changing setting work omly with the exe file}
