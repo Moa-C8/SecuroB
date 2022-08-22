@@ -1,33 +1,29 @@
 import string
 import random
+import hashlib
 
 
-def random_password(lenght):
-        i = 0
-        j = 0
-        password = ""
-        while i < lenght:
-            j = random.randint(0, len(alphabet_plus)-1)
-            password += alphabet_plus[j]
-            i += 1
-            
-        return password
-
-def random_password1(lenght):
+def random_password(lenght, alpha):
         i = 0
         j = 0
         password = ""
         while i < lenght:
             j = random.randint(0, len(alphabet_plusMoinSpace)-1)
-            password += alphabet_plusMoinSpace[j]
+            password += alpha[j]
             i += 1
             
         return password
 
-def readBgColor():
+def readSettFile():
         fic = open(SettingFile, 'r')
         lines = fic.readlines()
         fic.close()
+
+        return lines
+
+def readBgColor():
+        lines = readSettFile()
+
         lineBGSett = lines[0]
         valueBg = lineBGSett.replace('color,', '')
         valueBg = str(valueBg.replace('\n', ''))
@@ -35,9 +31,8 @@ def readBgColor():
         return valueBg
         
 def readTreeviewColor():
-        fic = open(SettingFile, 'r')
-        lines = fic.readlines()
-        fic.close()
+        lines = readSettFile()
+
         oddrowC = str(lines[3])
         oddrowC = oddrowC.replace('\n', "")
         evenrowC = str(lines[4])
@@ -49,29 +44,45 @@ def readTreeviewColor():
         return oddrowC,evenrowC,highlightC
 
 def readFgColor():
-        fic = open(SettingFile, 'r')
-        lines = fic.readlines()
-        fic.close()
+        lines = readSettFile()
+        
         ForegroundC = str(lines[6])
         ForegroundC = ForegroundC.replace('\n','')
 
         return ForegroundC
 
-def appMainReader():
-        fic = open(SettingFile, 'r')
-        lines = fic.readlines()
-        fic.close()
-        application = str(lines[7])
-        application = application.replace('\n', '')
-        if application == "SecuroB":
-                application = '1'
-                return application
-        elif application == "D&Crypt":
-                application = '2'
-                return application
-        else:
-                application = '3'
-                return application
+def genKey(password = "0"):
+        if password == "0":
+                password = random_password(15,alphabet_plus)
+        liste_letter = []
+        hash_ = hashlib.sha512(password.encode()).hexdigest()
+        i = 0
+        mot1 = ""
+        mot2 = ""
+        for each in hash_:
+            liste_letter.append(each)
+        while i < 64:
+            mot1 += liste_letter[i]
+            i += 1
+        while i < 128:
+            mot2 += liste_letter[i]
+            i += 1
+        mot1 = hashlib.sha256(mot1.encode()).hexdigest()
+        mot2 = hashlib.sha256(mot2.encode()).hexdigest()
+        key = mot2 + mot1
+        key = hashlib.sha256(key.encode()).hexdigest()
+        i = 0
+        Lmot = list(key)
+        while i < 21:  
+            del Lmot[i]
+            i += 1
+        key = ""
+        for each in Lmot:
+            key += each
+        key += "=" 
+        key = key.encode('utf-8')
+
+        return key
 
 
 # couleur
@@ -94,8 +105,6 @@ primary_color = readTreeviewColor()[0]
 secondary_color = readTreeviewColor()[1]
 highlight_color = readTreeviewColor()[2]
 
-application = appMainReader()
-
 rouge = "CC0000"
 bleu = "0000CC"
 vert = "33FF00"
@@ -109,7 +118,7 @@ alphabet_plusMoinSpace =list(string.ascii_letters + string.punctuation + string.
 alphabet_plus = list(string.ascii_letters + string.punctuation + string.digits + " ")
 dictAlphabet = {}
 
-maxCarMdp = 2
+minCarMdp = 3
 
 listExt = ['txt','csv','zip','aac','avi','doc','docx','gif','gz','h','htm','ico','iso','jpeg','mkv','mp3','mp4','odt','odp','ods',
 'odg','pdf','png','pps','py','rar','tar','torrent','xls','xlsx','wav','xml','bat','bmp','exe','.sh']

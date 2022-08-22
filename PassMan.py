@@ -91,21 +91,17 @@ class AppSecuroB(tk.Tk):
         self.SaveExitTxtBtn.set("Save and \nclose treeview")
         self.btnSaveExit.place(x=1130, y=645)       
 
-        self.lblKey = tk.Label(self.frameFile, text="", font=("Raleway", 16), bg=couleur_bg, fg=couleur_fg)
-        self.lblKey.grid(row=0, column=0, padx=10, pady=(3,5))
-        self.btnKey = tk.Button(self.frameFile,textvariable=self.keyBtnText, bg=couleur_bg, relief='groove', bd=3, fg=couleur_fg, padx=2, pady=2, command=self.findKey)
-        self.keyBtnText.set("Browse Key")
-        self.btnKey.grid(row=0, column=1, pady=(3,3))
+        self.printBtnPswdKey()
 
         self.lblBrowse = tk.Label(self.frameFile, text="", font=("Raleway", 16), bg=couleur_bg, fg=couleur_fg)
-        self.lblBrowse.grid(row=0, column=2, padx=10, pady=(3,5))
+        self.lblBrowse.grid(row=0, column=4, padx=10, pady=(3,5))
         self.btnBrowse = tk.Button(self.frameFile,textvariable=self.fileBrowseText, bg=couleur_bg, relief='groove', bd=3, fg=couleur_fg, padx=2, pady=2, command=self.findDatabase)
         self.fileBrowseText.set("Browse Database")
-        self.btnBrowse.grid(row=0, column=3, pady=(3,5), padx=(0,5))
-
-        self.btnOpen = tk.Button(self.frameFile, textvariable=self.openTextBtn, bg=couleur_bg, relief='groove', bd=3, fg=couleur_fg, padx=2, pady=2, command=self.afterBtnOpen)
+        self.btnBrowse.grid(row=0, column=5, pady=(3,5), padx=(0,5))
+        """
+        self.btnOpen = tk.Button(self.frameFile, textvariable=self.openTextBtn, bg=couleur_bg, relief='groove', bd=3, fg=couleur_fg, padx=2, pady=2, command=self.checkKey)
         self.openTextBtn.set("Open")
-
+        """
         self.buttonFrame = tk.LabelFrame(self, text='Commands', bg=couleur_bg, fg=couleur_fg)
         self.buttonFrame.pack(expand='yes', padx=20, pady=(0,0))
 
@@ -434,8 +430,16 @@ class AppSecuroB(tk.Tk):
 
     # Other Fonction
     def openTVBtn(self):
-        if self.lblKey.cget("text") != "" and self.lblBrowse.cget("text") != "" :
-            self.btnOpen.grid(row=0, column=4, pady=(3,5), padx=(5,5))
+        #print(self.key)
+        try :
+            if self.lblKey.cget("text") != "" and self.lblBrowse.cget("text") != "" :
+                self.printOpenBtn()
+        except:
+            try:
+                if self.key != "" and self.lblBrowse.cget("text") != "" :
+                    self.printOpenBtn()
+            except:
+                pass
  
     def getName(self, file_Abs_path):
         path = Path(file_Abs_path)
@@ -444,12 +448,15 @@ class AppSecuroB(tk.Tk):
         return name_file
     
     def findKey(self):
+        self.btnPswd.destroy()
+        self.lblKey = tk.Label(self.frameFile, text="", font=("Raleway", 16), bg=couleur_bg, fg=couleur_fg)
+        self.lblKey.grid(row=0, column=0, padx=10, pady=(3,5))
         self.keyBtnText.set("Browse ...")
         try :
             filekey = filedialog.askopenfile(title="Select key",filetypes=[("Key file", "*.key")])
             self.absPathKey = filekey.name
         except:
-            self.keyBtnText.set("Browse Key")
+            self.printBtnPswdKey()
         else:
             nameFileKey = self.getName(self.absPathKey)
             self.lblKey.configure(text=nameFileKey)
@@ -471,41 +478,55 @@ class AppSecuroB(tk.Tk):
             
             self.openTVBtn()
 
-    def afterBtnOpen(self):
+    def checkKey(self):
+        try:
+            if self.key != "":
+                self.afterBtnOpen()
+        except:
+            try:
+                filekey = open(self.absPathKey, 'rb')
+            except:
+                pass
+            else:
+                self.key = filekey.read()
+                filekey.close()
+                self.afterBtnOpen()
 
-        filekey = open(self.absPathKey, 'rb')
-        self.key = filekey.read()
-        filekey.close()
+    def afterBtnOpen(self):
         try:
             fer = Fernet(self.key)
         except:
             messagebox.showinfo('Something Wrong','have problems with the key \nprobably not the good ones')
             self.querryDataBase()
         else:
-            tempFiledecrypt = open(self.absPathdatabase, 'rb')
             try:
-                DbDecrypt = tempFiledecrypt.read()
+                tempFiledecrypt = open(self.absPathdatabase, 'rb')
             except:
-                tempFiledecrypt.close()
-                self.querryDataBase()
+                pass
             else:
-                #self.pathTFileDCrypt = tempFiledecrypt.name
-                tempFiledecrypt.close()
                 try:
-                    DcryptContent = fer.decrypt(DbDecrypt)
+                    DbDecrypt = tempFiledecrypt.read()
                 except:
-                    print('ici')
-                else:
-                    nameFile = self.getName(self.absPathdatabase)
-                    for k in range(0,4):
-                        nameFile = nameFile[:-1]
-                    fileDbDcrypt = open(TempFileDc, 'wb')
-                    self.absTempDb = fileDbDcrypt.name
-                    fileDbDcrypt.write(DcryptContent)
-                    self.absDCPathdatabase = fileDbDcrypt.name
-                    #print(self.absDCPathdatabase)
-                    fileDbDcrypt.close()
+                    tempFiledecrypt.close()
                     self.querryDataBase()
+                else:
+                    #self.pathTFileDCrypt = tempFiledecrypt.name
+                    tempFiledecrypt.close()
+                    try:
+                        DcryptContent = fer.decrypt(DbDecrypt)
+                    except:
+                        pass
+                    else:
+                        nameFile = self.getName(self.absPathdatabase)
+                        for k in range(0,4):
+                            nameFile = nameFile[:-1]
+                        fileDbDcrypt = open(TempFileDc, 'wb')
+                        self.absTempDb = fileDbDcrypt.name
+                        fileDbDcrypt.write(DcryptContent)
+                        self.absDCPathdatabase = fileDbDcrypt.name
+                        #print(self.absDCPathdatabase)
+                        fileDbDcrypt.close()
+                        self.querryDataBase()
 
     def cryptDbFile(self):
         try:
@@ -545,48 +566,80 @@ class AppSecuroB(tk.Tk):
         except:
             pass
 
+    def choosePswd(self):
+        self.btnPswd.destroy()
+        self.btnKey.destroy()
+
+        self.lblPswd = tk.Label(self.frameFile, text="", font=("Raleway", 16), bg=couleur_bg, fg=couleur_fg)
+        self.lblPswd.grid(row=0, column=0, padx=10, pady=(3,5))
+
+        self.entryPswd = tk.Entry(self.frameFile, show="*")
+        self.entryPswd.grid(row=0, column=1, padx=5, pady=(3,5))
+
+        self.seeTextBtn = tk.StringVar()
+
+        self.btnSee = tk.Button(self.frameFile,textvariable=self.seeTextBtn, bg=couleur_bg, relief='groove', bd=3, fg=couleur_fg, command=lambda:self.ShowEntryPswd(0))
+        self.seeTextBtn.set("see")
+        self.btnSee.grid(row=0, column=2, padx=(0,2), pady=(3,5))
+
+        self.btnOk = tk.Button(self.frameFile,text="Ok", bg=couleur_bg, relief='groove', bd=3, fg=couleur_fg, command=lambda:self.choosePassword(1))
+        self.btnOk.grid(row=0, column=3, padx=2, pady=(3,5))
+
+        self.entryPswd.bind('<Escape>', self.resetMainFrame)
+        self.entryPswd.bind('<Return>', self.choosePassword)
+        self.entryPswd.bind('<Button-1>', self.resetPswdEntry)
+
+    def choosePassword(self, event):
+        pswdLen = len(self.entryPswd.get())
+        if pswdLen < minCarMdp:
+            self.lblPswd.configure(text =f"{minCarMdp} lenght min")
+        else:
+            self.key = genKey(self.entryPswd.get())
+            self.lblPswd.configure(text ="Ok")
+            self.openTVBtn()
+
+    def resetPswdEntry(self, e):
+        self.lblPswd.configure(text ="need to validate")
+
+    def resetMainFrame(self,e):
+        try:
+            self.lblKey.destroy()
+        except:
+            try:
+                self.entryPswd.destroy()
+            except:
+                pass
+            else:
+                self.lblPswd.destroy()
+                self.btnOk.destroy()
+                self.printBtnPswdKey()
+        else:
+            self.printBtnPswdKey()
+            
+    def printBtnPswdKey(self):
+        self.btnPswd = tk.Button(self.frameFile, text="Password", bg=couleur_bg, relief='groove', bd=3, fg=couleur_fg, padx=2, pady=2, command=self.choosePswd) #command=self.findKey
+        self.btnPswd.grid(row=0, column=0, pady=(3,3), padx=2)
+
+        self.btnKey = tk.Button(self.frameFile, textvariable=self.keyBtnText, bg=couleur_bg, relief='groove', bd=3, fg=couleur_fg, padx=2, pady=2, command=self.findKey)
+        self.keyBtnText.set("Browse Key")
+        self.btnKey.grid(row=0, column=1, pady=(3,3), padx=2)
+        
+    def printOpenBtn(self):
+        self.btnOpen = tk.Button(self.frameFile, textvariable=self.openTextBtn, bg=couleur_bg, relief='groove', bd=3, fg=couleur_fg, padx=2, pady=2, command=self.checkKey)
+        self.openTextBtn.set("Open")
+        self.btnOpen.grid(row=0, column=6, pady=(3,5), padx=(5,5))
 
 # other fonction for create key with password in menubar
-    def genKeyByPassword(self,password):
-        liste_letter = []
-        hash_ = hashlib.sha512(password.encode()).hexdigest()
-        i = 0
-        mot1 = ""
-        mot2 = ""
-        for each in hash_:
-            liste_letter.append(each)
-        while i < 64:
-            mot1 += liste_letter[i]
-            i += 1
-        while i < 128:
-            mot2 += liste_letter[i]
-            i += 1
-        mot1 = hashlib.sha256(mot1.encode()).hexdigest()
-        mot2 = hashlib.sha256(mot2.encode()).hexdigest()
-        key = mot2 + mot1
-        key = hashlib.sha256(key.encode()).hexdigest()
-        i = 0
-        Lmot = list(key)
-        while i < 21:  
-            del Lmot[i]
-            i += 1
-        key = ""
-        for each in Lmot:
-            key += each
-        key += "=" 
-        key = key.encode('utf-8')
-
-        return key
 
     def afterKfile(self,e):
             password = self.entrypswd.get()
             lenPswd = len(password)
-            if lenPswd <= 7:
-                self.labelEntry2.configure(text='min 8 lenght')
-            elif lenPswd > 7:
+            if lenPswd < minCarMdp:
+                self.labelEntry2.configure(text=f'min {minCarMdp} lenght')
+            elif lenPswd >= minCarMdp:
                 self.labelEntry2.configure(text='Ok')
 
-                key = self.genKeyByPassword(password)
+                key = genKey(password)
                 
                 try:
                     fileKey = filedialog.asksaveasfile(title="Create key",filetypes=[("key files","*.key")], defaultextension=".key", initialfile="Mykey")
@@ -609,7 +662,7 @@ class AppSecuroB(tk.Tk):
             size = int(size)
             if size > 7:
                 self.lblSizeLeft.configure(text='Ok')              
-                password = random_password1(size)
+                password = random_password(size, alphabet_plusMoinSpace)
 
                 self.TxtBoxPswd.delete(1.0, "end")
                 self.TxtBoxPswd.insert(1.0, password)
@@ -622,15 +675,25 @@ class AppSecuroB(tk.Tk):
         else:
             self.lblSizeLeft.configure(text='number only')
 
-    def ShowEntryPswd(self):
+    def ShowEntryPswd(self, n):
         global l
-        if l == 0:
-            self.entrypswd.config(show="")
-            l += 1
-            self.seeTxt.set('hide')
-        else:
-            self.entrypswd.config(show="*")
-            l = 0
-            self.seeTxt.set('see')
+        if n == 0:
+            if l == 0:
+                self.entryPswd.config(show="")
+                l += 1
+                self.seeTextBtn.set('hide')
+            else:
+                self.entryPswd.config(show="*")
+                l = 0
+                self.seeTextBtn.set('see')
+        elif n == 1:
+            if l == 0:
+                self.entrypswd.config(show="")
+                l += 1
+                self.seeTxt.set('hide')
+            else:
+                    self.entrypswd.config(show="*")
+                    l = 0
+                    self.seeTxt.set('see')  
 
 l = 0

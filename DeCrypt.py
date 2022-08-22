@@ -108,16 +108,16 @@ class AppDeCrypt(tk.Tk):
 
     def choosePassword(self, event):
         self.psw_len = len(self.entryPsw.get())
-        if self.psw_len > maxCarMdp:
+        if self.psw_len >= minCarMdp:
             self.checkWay = True
             self.lblBrowseKey.configure(text="")
             self.lblChoosePsw.configure(text="you used password")
             self.typeOfKey = "password"
             self.checkWay()
-        if self.psw_len <= maxCarMdp:
+        if self.psw_len < minCarMdp:
             self.checkWay = False
             self.lblBrowseKey.configure(text="")
-            self.lblChoosePsw.configure(text="min 8 lenght")
+            self.lblChoosePsw.configure(text=f"min {minCarMdp} lenght")
 
     def resetPswdEntry(self, event):
         self.lblChoosePsw.configure(text="press enter to \n validate")
@@ -206,7 +206,7 @@ class AppDeCrypt(tk.Tk):
                       
         elif self.typeOfKey == "password":
             if self.checkWay:
-                self.key = self.genKeyByPassword(self.entryPsw.get())
+                self.key = genKey(self.entryPsw.get())
             else:
                 messagebox.showerror('Problem', 'Password probably to small')      
 
@@ -217,39 +217,8 @@ class AppDeCrypt(tk.Tk):
 
 # (De)Crypt fonctions
 
-    def genKeyByPassword(self,password):
-        liste_letter = []
-        hash_ = hashlib.sha512(password.encode()).hexdigest()
-        i = 0
-        mot1 = ""
-        mot2 = ""
-        for each in hash_:
-            liste_letter.append(each)
-        while i < 64:
-            mot1 += liste_letter[i]
-            i += 1
-        while i < 128:
-            mot2 += liste_letter[i]
-            i += 1
-        mot1 = hashlib.sha256(mot1.encode()).hexdigest()
-        mot2 = hashlib.sha256(mot2.encode()).hexdigest()
-        key = mot2 + mot1
-        key = hashlib.sha256(key.encode()).hexdigest()
-        i = 0
-        Lmot = list(key)
-        while i < 21:  
-            del Lmot[i]
-            i += 1
-        key = ""
-        for each in Lmot:
-            key += each
-        key += "=" 
-        key = key.encode('utf-8')
-
-        return key
-
     def keyGeneratorRandom(self):
-        password = random_password(15)
+        password = random_password(15, alphabet_plus)
         
         liste_letter = []
         hash_ = hashlib.sha512(password.encode()).hexdigest()
@@ -298,7 +267,7 @@ class AppDeCrypt(tk.Tk):
             f = Fernet(self.key)
         except:
             if messagebox.askyesno('somthing Wrong','have problems with the key \nif you use password press return \nor would you generate a key file') == True:
-                self.keyGeneratorRandom()
+                genKey()
             self.CBtnTxt.set('Crypt')
         
         else:
@@ -339,7 +308,7 @@ class AppDeCrypt(tk.Tk):
             f = Fernet(self.key)
         except:
             if messagebox.askyesno('Something Wrong','have problems with the key \nif you use password press return \nor would you generate a key file') == True:
-                self.keyGeneratorRandom()
+                genKey()
             self.DBtnTxt.set('Decrypt')           
         else:
             try:
@@ -401,12 +370,12 @@ class AppDeCrypt(tk.Tk):
     def afterKfile(self,e):
         password = self.entrypswd.get()
         lenPswd = len(password)
-        if lenPswd <= 7:
-            self.labelEntry2.configure(text='min 8 lenght')
-        elif lenPswd > 7:
+        if lenPswd < minCarMdp:
+            self.labelEntry2.configure(text=f'min {minCarMdp} lenght')
+        elif lenPswd >= minCarMdp:
             self.labelEntry2.configure(text='Ok')
 
-            key = self.genKeyByPassword(password)
+            key = genKey(password)
             
             try:
                 fileKey = filedialog.asksaveasfile(title="Create key",filetypes=[("key files","*.key")], defaultextension=".key", initialfile="Mykey")
@@ -423,26 +392,26 @@ class AppDeCrypt(tk.Tk):
                     self.window2.deiconify()
                     self.labelEntry2.configure(text='you can close me')
     #generate a random password
-    def CheckGenerate(self, e):
+    """def CheckGenerate(self, e):
         size = self.entrySize.get()
         
         if size.isdigit() == True:
             size = int(size)
 
-            if size > 7:
+            if size > minCarMdp:
                 self.lblSizeLeft.configure(text='Ok')              
                 password = random_password1(size)
 
                 self.TxtBoxPswd.delete(1.0, "end")
                 self.TxtBoxPswd.insert(1.0, password)
 
-            elif size <= 7:
+            elif size <= minCarMdp:
                 k = 8   - size
                 self.lblSizeLeft.configure(text=f'adds min {k}')
             elif size > 90:
                 self.lblSizeLeft.configure(text="Max 90")
         else:
-            self.lblSizeLeft.configure(text='number only')
+            self.lblSizeLeft.configure(text='number only')"""
 
     def ShowEntryPswd(self):
         global l

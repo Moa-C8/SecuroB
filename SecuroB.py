@@ -5,6 +5,7 @@ from tkinter import filedialog, messagebox,colorchooser
 
 from pathlib import Path
 import hashlib
+from xml.sax.handler import all_properties
 import cryptography
 from cryptography.fernet import Fernet
 import random
@@ -176,7 +177,7 @@ def keyFileByPswd(self):
         self.entrypswd = tk.Entry(framepswd, font=('Raleway', 18), show='*')
         self.entrypswd.grid(column=0, row=1)
 
-        self.btnHideSee = tk.Button(framepswd, textvariable=self.seeTxt, bg=couleur_bg, relief='groove', fg=couleur_fg, borderwidth=5 ,padx=1, pady=1, command=lambda:self.ShowEntryPswd())
+        self.btnHideSee = tk.Button(framepswd, textvariable=self.seeTxt, bg=couleur_bg, relief='groove', fg=couleur_fg, borderwidth=5 ,padx=1, pady=1, command=lambda:self.ShowEntryPswd(1))
         self.btnHideSee.grid(column=2, row=1)
         self.seeTxt.set("see")
 
@@ -218,6 +219,7 @@ def keyFileByKey(self):
         self.btnCreateK = tk.Button(self.window4, text="Create", bg=couleur_bg, fg=couleur_fg, relief='groove', command=lambda:afterKbyK(self))
         self.btnCreateK.pack(pady=10)
 
+"""
 def ShowEntryPswd(self):
         global l
         if l == 0:
@@ -228,6 +230,7 @@ def ShowEntryPswd(self):
             self.entrypswd.config(show="*")
             l = 0
             self.seeTxt.set('see')
+"""
 
 def afterKbyK(self):
         key = self.EntryKey.get()
@@ -249,7 +252,7 @@ def afterKbyK(self):
                     try:
                         filela = open(filekey.name, "wb")
                     except:
-                        pass
+                        self.window4.deiconify()
                     else:
                         key = bytes(key, 'utf-8')
                         filela.write(key)
@@ -259,12 +262,12 @@ def afterKbyK(self):
 def afterKfile(self):
         password = self.entrypswd.get()
         lenPswd = len(password)
-        if lenPswd <= 7:
-            self.labelEntry2.configure(text='min 8 lenght')
-        elif lenPswd > 7:
+        if lenPswd < minCarMdp:
+            self.labelEntry2.configure(text=f'min {minCarMdp} lenght')
+        elif lenPswd >= minCarMdp:
             self.labelEntry2.configure(text='Ok')
 
-            key = AppDeCrypt.genKeyByPassword(application, password)
+            key = genKey(password)
             
             try:
                 fileKey = filedialog.asksaveasfile(title="Create key",filetypes=[("key files","*.key")], defaultextension=".key", initialfile="Mykey")
@@ -274,7 +277,8 @@ def afterKfile(self):
                 try:
                     filele = open(fileKey.name, "wb")
                 except:
-                    pass
+                    #self.window2.iconify()
+                    self.window2.deiconify()
                 else:
                     filele.write(key)
                     filele.close()
@@ -314,7 +318,7 @@ def CheckGenerate(self, e):
 
             if size <= 10000:
                 self.lblSizeLeft.configure(text='Ok')              
-                password = random_password1(size)
+                password = random_password(size, alphabet_plusMoinSpace)
 
                 self.TxtBoxPswd.delete(1.0, "end")
                 self.TxtBoxPswd.insert(1.0, password)
