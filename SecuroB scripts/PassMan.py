@@ -573,8 +573,8 @@ class AppSecuroB(tk.Tk):
         self.lblPswd = tk.Label(self.frameFile, text="", font=("Raleway", 16), bg=couleur_bg, fg=couleur_fg)
         self.lblPswd.grid(row=0, column=0, padx=10, pady=(3,5))
 
-        self.entryPswd = tk.Entry(self.frameFile, show="*")
-        self.entryPswd.grid(row=0, column=1, padx=5, pady=(3,5))
+        self.entryPswd1 = tk.Entry(self.frameFile, show="*")
+        self.entryPswd1.grid(row=0, column=1, padx=5, pady=(3,5))
 
         self.seeTextBtn = tk.StringVar()
 
@@ -585,16 +585,16 @@ class AppSecuroB(tk.Tk):
         self.btnOk = tk.Button(self.frameFile,text="Ok", bg=couleur_bg, relief='groove', bd=3, fg=couleur_fg, command=lambda:self.choosePassword(1))
         self.btnOk.grid(row=0, column=3, padx=2, pady=(3,5))
 
-        self.entryPswd.bind('<Escape>', self.resetMainFrame)
-        self.entryPswd.bind('<Return>', self.choosePassword)
-        self.entryPswd.bind('<Button-1>', self.resetPswdEntry)
+        self.entryPswd1.bind('<Escape>', self.resetMainFrame)
+        self.entryPswd1.bind('<Return>', self.choosePassword)
+        self.entryPswd1.bind('<Button-1>', self.resetPswdEntry)
 
     def choosePassword(self, event):
-        pswdLen = len(self.entryPswd.get())
+        pswdLen = len(self.entryPswd1.get())
         if pswdLen < minCarMdp:
             self.lblPswd.configure(text =f"{minCarMdp} lenght min")
         else:
-            self.key = genKey(self.entryPswd.get())
+            self.key = genKey(self.entryPswd1.get())
             self.lblPswd.configure(text ="Ok")
             self.openTVBtn()
 
@@ -606,7 +606,7 @@ class AppSecuroB(tk.Tk):
             self.lblKey.destroy()
         except:
             try:
-                self.entryPswd.destroy()
+                self.entryPswd1.destroy()
             except:
                 pass
             else:
@@ -679,11 +679,11 @@ class AppSecuroB(tk.Tk):
         global l
         if n == 0:
             if l == 0:
-                self.entryPswd.config(show="")
+                self.entryPswd1.config(show="")
                 l += 1
                 self.seeTextBtn.set('hide')
             else:
-                self.entryPswd.config(show="*")
+                self.entryPswd1.config(show="*")
                 l = 0
                 self.seeTextBtn.set('see')
         elif n == 1:
