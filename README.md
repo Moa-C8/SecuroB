@@ -5,6 +5,7 @@ you find all infos in app sorry for my bad english
 
 WARNING
    Error Known {Restart after changing setting work omly with the exe file}
+                 {exe work only on windows and scripts needs to delete all lines for icon}
 
 
 That was my first application .
