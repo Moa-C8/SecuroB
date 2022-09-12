@@ -109,13 +109,13 @@ class AppDeCrypt(tk.Tk):
     def choosePassword(self, event):
         self.psw_len = len(self.entryPsw.get())
         if self.psw_len >= minCarMdp:
-            self.checkWay = True
+            #self.checkWay = True
             self.lblBrowseKey.configure(text="")
             self.lblChoosePsw.configure(text="you used password")
             self.typeOfKey = "password"
             self.checkWay()
         if self.psw_len < minCarMdp:
-            self.checkWay = False
+            #self.checkWay = False
             self.lblBrowseKey.configure(text="")
             self.lblChoosePsw.configure(text=f"min {minCarMdp} lenght")
 
