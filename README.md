@@ -1,4 +1,4 @@
-# SecuroB
+# SecuroB WIP
 Password Manager (only for scripts)
 
 you find all infos in app sorry for my bad english
