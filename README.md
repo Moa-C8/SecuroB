@@ -1,4 +1,5 @@
 # SecuroB WIP
+## .exe not updated
 Password Manager (only for scripts)
 
 you find all infos in app sorry for my bad english
