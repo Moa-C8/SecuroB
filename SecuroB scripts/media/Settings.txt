@@ -1,8 +1,8 @@
 #35393C
 starting_message,0
 language,en
-#1ad6fd
-#ffffff
-#ff0000
+#fb8a46
+#398675
+#94df62
 #ffffff
 1

@@ -123,8 +123,8 @@ class AppSecuroB(tk.Tk):
 
         self.labelPswd = tk.Label(self.dataFrame, text="Password or Key", bg=couleur_bg, fg=couleur_fg)
         self.labelPswd.grid(row=0, column=4, padx=10, pady=(2,4))
-        self.entryPswd = tk.Entry(self.dataFrame)
-        self.entryPswd.grid(row=0, column=5, padx=10, pady=(2,4))
+        self.entryPswdBox = tk.Entry(self.dataFrame)
+        self.entryPswdBox.grid(row=0, column=5, padx=10, pady=(2,4))
 
         self.id_entry = tk.Entry(self, background=couleur_bg)
         self.id_entry.place(x=1200, y =740)
@@ -165,13 +165,13 @@ class AppSecuroB(tk.Tk):
             pass
         else:
             self.entryEmail.insert(0, values[1])
-            self.entryPswd.insert(0, values[2])
+            self.entryPswdBox.insert(0, values[2])
             self.id_entry.insert(0, values[3])
 
     def clearEntries(self):
         self.entrySiteName.delete(0, 'end')
         self.entryEmail.delete(0, 'end')
-        self.entryPswd.delete(0, 'end')
+        self.entryPswdBox.delete(0, 'end')
         self.id_entry.delete(0, 'end')
 
     def up(self):
@@ -236,7 +236,7 @@ class AppSecuroB(tk.Tk):
     def updateRecords(self):
         selected = self.myTree.focus()
         #update record
-        self.myTree.item(selected, text="", values=(self.entrySiteName.get(), self.entryEmail.get(), self.entryPswd.get(), self.id_entry.get(),))
+        self.myTree.item(selected, text="", values=(self.entrySiteName.get(), self.entryEmail.get(), self.entryPswdBox.get(), self.id_entry.get(),))
         #update database
         try:
             conn = sqlite3.connect(self.absDCPathdatabase)
@@ -254,7 +254,7 @@ class AppSecuroB(tk.Tk):
             {
                 'siteOrApp': self.entrySiteName.get(),
                 'email': self.entryEmail.get(),
-                'password': self.entryPswd.get(),
+                'password': self.entryPswdBox.get(),
                 'oid':self.id_entry.get(),
             })
 
@@ -306,7 +306,7 @@ class AppSecuroB(tk.Tk):
 
             request1 = "INSERT INTO myData (siteOrApp, email, password) values (?, ?, ?) "
 
-            c.execute(request1,(self.entrySiteName.get(), self.entryEmail.get(), self.entryPswd.get()))
+            c.execute(request1,(self.entrySiteName.get(), self.entryEmail.get(), self.entryPswdBox.get()))
 
             conn.commit()
             conn.close()
